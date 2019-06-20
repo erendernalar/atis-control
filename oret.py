@@ -5,15 +5,16 @@ import time
 lowerBound=np.array([0,50,200])
 upperBound=np.array([180,128,255])
 
-cam= cv2.VideoCapture("asd.mp4")
+cam= cv2.VideoCapture("MOV_0840.mp4")
 
 kernelOpen=np.ones((5,5))
 kernelClose=np.ones((20,20))
 
 while True:
+    start = time.time()
     ret, img=cam.read()
     img=cv2.resize(img,(340,220))
-
+    
     imgHSV= cv2.cvtColor(img,cv2.COLOR_BGR2HSV)
 
     mask=cv2.inRange(imgHSV,lowerBound,upperBound)
@@ -47,6 +48,11 @@ while True:
 	cv2.putText(img, statusText ,(x , y + 5 + w),cv2.FONT_HERSHEY_SIMPLEX,0.5,
 	statusColor,lineType=cv2.LINE_AA)
 	cv2.imshow("maskClose",maskClose)
+	end = time.time()
+	seconds = end - start
+	fps = "Current FPS is: " + str(1 / seconds)
+	cv2.putText(img, fps ,(20 , 20),cv2.FONT_HERSHEY_SIMPLEX,0.5,
+	colorGreen,lineType=cv2.LINE_AA)
     cv2.imshow("maskOpen",maskOpen)
     cv2.imshow("mask",mask)
     cv2.imshow("cam",img)
