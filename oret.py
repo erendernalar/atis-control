@@ -1,9 +1,18 @@
 import cv2
 import numpy as np
 import time
+from dronekit import connect, Command
+from pymavlink import mavutil
 
-lowerBound=np.array([0,50,200])
-upperBound=np.array([180,128,255])
+vehicle = connect("/dev/serial0", wait_ready=True, baud=921600)
+
+print ("Connected to the vehicle")
+
+def firstKapak():
+	vehicle.channels.overrides['6'] = 800
+
+lowerBound=np.array([10,80,120])
+upperBound=np.array([35,220,240])
 
 cam= cv2.VideoCapture("MOV_0840.mp4")
 
@@ -43,6 +52,7 @@ while True:
 		statusText = "LEFT"
 		statusColor = colorRed
 	else:
+		firstKapak()
 		statusText = "LINED"
 		statusColor = colorGreen 
 	cv2.putText(img, statusText ,(x , y + 5 + w),cv2.FONT_HERSHEY_SIMPLEX,0.5,
