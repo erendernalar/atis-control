@@ -10,6 +10,7 @@ def connectToPix():
     global vehicle
     vehicle = connect('udp:127.0.0.1:14551',_initialize=True)
     print("Connected to the vehicle")
+    return vehicle
 
 #Variables
 topCapChannel = 6
@@ -59,11 +60,11 @@ def download_mission():
 def GetDistanceToNextPoint():
     nextwaypoint = vehicle.commands.next
     if nextwaypoint == 0:
-        return None
+        return 1000
     missionitem = cmd[nextwaypoint-1] #commands are zero indexed
     lat = missionitem.x
     lon = missionitem.y
-    alt = missionitem.z
+    alt = vehicle.location.global_relative_frame.alt
     targetWaypointLocation = LocationGlobalRelative(lat,lon,alt)
     distancetopoint = get_distance_metres(vehicle.location.global_frame, targetWaypointLocation)
     return distancetopoint
@@ -73,14 +74,14 @@ def estimatedSec():
     time = math.sqrt(vehicle.location.global_relative_frame.alt / 4.905)
     return time 
 
-def distanceSec(wp):
+def distance_to_wp(wp):
     nextwaypoint = vehicle.commands.next - 1
     if nextwaypoint == 0:
-        return None
+        return 1000
     missionitem = cmd[wp - 1] #commands are zero indexed
     lat = missionitem.x
     lon = missionitem.y
-    alt = missionitem.z
+    alt = vehicle.location.global_relative_frame.alt
     targetWaypointLocation = LocationGlobalRelative(lat,lon,alt)
     distancetopoint = get_distance_metres(vehicle.location.global_frame, targetWaypointLocation)
     return distancetopoint
